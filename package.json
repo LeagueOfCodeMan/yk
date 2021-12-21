@@ -20,6 +20,7 @@
     ]
   },
   "dependencies": {
+    "@uiw/react-baidu-map": "^2.0.6",
     "antd": "^4.17.4",
     "react": "17.x",
     "react-bmapgl": "^0.1.28",
