@@ -1,13 +1,16 @@
 import React from 'react';
-import { MapApiLoaderHOC } from 'react-bmapgl';
 import JiangNan from '@/pages/component/store/JiangNan';
 import { AK } from '@/pages/mock/constants';
+import { APILoader } from '@uiw/react-baidu-map';
 
-class ContentCenter extends React.Component<any, any> {
-  render() {
-    const { value } = this.props;
-    return <JiangNan />;
-  }
-}
+const ContentCenter: React.FC<any> = () => {
+  return (
+    <div style={{ width: '100%', height: '100%' }}>
+      <APILoader akay={AK}>
+        <JiangNan />
+      </APILoader>
+    </div>
+  );
+};
 
-export default MapApiLoaderHOC({ ak: AK })(ContentCenter);
+export default ContentCenter;

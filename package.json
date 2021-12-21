@@ -21,14 +21,13 @@
   },
   "dependencies": {
     "@uiw/react-baidu-map": "^2.0.6",
+    "@uiw/react-baidu-map-types": "^2.0.6",
     "antd": "^4.17.4",
     "react": "17.x",
-    "react-bmapgl": "^0.1.28",
     "react-dom": "17.x",
     "umi": "^3.5.20"
   },
   "devDependencies": {
-    "@types/bmapgl": "0.0.5",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@umijs/preset-react": "1.x",

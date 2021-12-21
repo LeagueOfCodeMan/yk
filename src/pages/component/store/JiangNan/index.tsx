@@ -1,16 +1,20 @@
-import React from 'react';
-import { Label, Map, MapTypeControl, Marker, ZoomControl } from 'react-bmapgl';
+import React, { useState } from 'react';
+import {
+  APILoader,
+  Map,
+  MapTypeControl,
+  PanoramaControl,
+} from '@uiw/react-baidu-map';
 import styles from './index.less';
 
 const defaultSettings = {
+  autoLocalCity: true,
   enableDragging: true, // 是否开启地图可拖拽缩放
   enableScrollWheelZoom: true, //是否开启鼠标滚轮缩放
-  tilt: 0, // 地图倾斜角度
-  zoom: 12, // 缩放级别
-  mapType: 'earth', // 地图类型 earth / normal
-  style: {
-    width: '100%',
-    height: '100%',
+  zoom: 14, // 缩放级别
+  center: {
+    lng: 120.034116,
+    lat: 28.875991,
   },
 };
 
@@ -20,31 +24,19 @@ const JiangNan: React.FC<any> = () => {
   };
   // @ts-ignore
   return (
-    <Map
-      className={styles.map}
-      center={new BMapGL.Point(116.404449, 39.914889)}
-      {...defaultSettings}
-      onClick={handleClick}
-    >
-      <Label
-        position={new BMapGL.Point(116.4, 39.91)}
-        text="欢迎使用百度地图GL版"
-      />
-      <Label
-        position={new BMapGL.Point(222.4, 333.91)}
-        text="欢迎使用百度地图GL版2"
-      />
-      <Marker
-        position={new BMapGL.Point(116.404449, 39.914889)}
-        enableDragging
-      />
-      <Marker
-        position={new BMapGL.Point(1116.404449, 39.914889)}
-        enableDragging
-      />
-      <MapTypeControl />
-      <ZoomControl />
-    </Map>
+    <>
+      <Map
+        {...(defaultSettings as any)}
+        mapType={BMAP_SATELLITE_MAP}
+        currentCity={'永康市'}
+        onClick={handleClick}
+      >
+        <MapTypeControl
+          offset={new BMap.Size(40, 40)}
+          anchor={BMAP_ANCHOR_TOP_LEFT}
+        />
+      </Map>
+    </>
   );
 };
 
