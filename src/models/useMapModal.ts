@@ -15,6 +15,7 @@ export default function useMapModel() {
    */
   const [target, setTarget] = useState<OptionChild>();
   const changeTarget = useCallback((v) => {
+    console.log(v, 'setTarget');
     setCenter(
       v?.lng ? { lng: v?.lng, lat: v?.lat } : ZheJiangYongKangConfig.center,
     );
@@ -41,10 +42,10 @@ export default function useMapModel() {
    */
   const [children, setChildren] = useState<OptionChild[]>([]);
   useEffect(() => {
-    setChildren(
+    const filterTypeChildren =
       optionSelect?.filter((child) => child?.value === value)?.[0]?.children ||
-        [],
-    );
+      [];
+    setChildren(filterTypeChildren as OptionChild[]);
   }, [value]);
   /**
    * 选择类目下筛选后点列表
@@ -56,10 +57,21 @@ export default function useMapModel() {
       [];
     const filterSearchChildren =
       filterTypeChildren?.filter((d) =>
-        Object.values(d)?.includes(search || ''),
+        d?.showList
+          ?.map((s) => s?.value)
+          ?.join('')
+          ?.includes(search || ''),
       ) || [];
-    setChildren2(filterSearchChildren);
+    setChildren2(filterSearchChildren as OptionChild[]);
   }, [value, search]);
+
+  /**
+   * popover visible控制
+   */
+  const [visible, setVisible] = useState<boolean>(false);
+  const changeVisible = useCallback((vis) => {
+    setVisible(vis);
+  }, []);
 
   return {
     search,
@@ -72,5 +84,7 @@ export default function useMapModel() {
     changeValue,
     children,
     children2,
+    visible,
+    changeVisible,
   };
 }

@@ -1,10 +1,11 @@
-import { AutoComplete, Input } from 'antd';
+import { AutoComplete, Input, Space } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import React, { useState } from 'react';
+import React from 'react';
 import { OptionChild } from '@/pages/interface';
 import IconFont from '@/pages/component/IconFont';
 import Highlighter from 'react-highlight-words';
 import { useModel } from 'umi';
+import { ZheJiangYongKangConfig } from '@/pages/mock/jiangnan';
 
 function debounce(fn: Function, delay: number) {
   let timerId: any = null;
@@ -21,12 +22,18 @@ function debounce(fn: Function, delay: number) {
   };
 }
 
-const Search: React.FC<{}> = () => {
+const Search: React.FC = () => {
   // @ts-ignore
-  const { changeSearch, changeTarget, children, search } =
-    useModel('useMapModal');
+  const {
+    changeSearch,
+    changeTarget,
+    children,
+    search,
+    changeCenter,
+    changeVisible,
+  } = useModel('useMapModal');
   const renderItem = (i: OptionChild) => ({
-    value: i?.companyName || '',
+    value: i?.showList?.filter((j) => Boolean(j?.search))?.[0]?.value || '',
     key: i?.searchKey || '',
     tg: i,
     label: (
@@ -37,45 +44,50 @@ const Search: React.FC<{}> = () => {
           fontSize: 12,
         }}
       >
-        <span style={{ fontSize: 12, marginRight: 10 }}>
+        <Space style={{ fontSize: 12, marginRight: 10 }}>
           <IconFont
             type="icon-Company"
             style={{ marginRight: 5, fontSize: 14 }}
           />
-          <Highlighter
-            highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-            searchWords={[search]}
-            autoEscape
-            textToHighlight={i?.companyName ? i?.companyName?.toString() : ''}
-          />
-        </span>
-        <span style={{ color: 'rgba(0,0,0,0.4)' }}>
-          <Highlighter
-            highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-            searchWords={[search]}
-            autoEscape
-            textToHighlight={
-              i?.registerAddress ? i?.registerAddress?.toString() : ''
-            }
-          />
-        </span>
+          {i?.showList
+            ?.filter((j) => j?.search > 0)
+            ?.map((s: any, index: number) => {
+              return (
+                <span
+                  key={i?.type + '-' + i?.serialNumber + '-' + index}
+                  style={s?.search === 1 ? {} : { color: 'rgba(0,0,0,0.4)' }}
+                >
+                  <Highlighter
+                    highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+                    searchWords={[search]}
+                    autoEscape
+                    textToHighlight={s?.value ? s?.value?.toString() : ''}
+                  />
+                </span>
+              );
+            })}
+        </Space>
       </div>
     ),
   });
 
   const data = children?.map((i) => ({
     ...i,
-    searchKey: Object.values(i)?.join(' '),
+    searchKey: i?.showList?.map((s) => s?.value)?.join(' '),
   }));
 
   const handleSearch = debounce((value: string) => {
     // 补全时仅做过滤
+    if (!value) {
+      changeCenter(ZheJiangYongKangConfig.center);
+    }
     changeSearch(value);
   }, 500);
 
   const handleSelect = (value: string, option: any) => {
     changeSearch(value);
-    changeTarget(option);
+    changeTarget(option?.tg);
+    changeVisible(true);
   };
   return (
     <AutoComplete

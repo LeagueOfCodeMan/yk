@@ -7,10 +7,11 @@ import {
   ScaleControl,
 } from '@uiw/react-baidu-map';
 import styles from './index.less';
-import { Popover, Radio } from 'antd';
-import { ZheJiangYongKangConfig } from '@/pages/mock/jiangnan';
+import { Popover, Radio, Space } from 'antd';
+import { optionSelect, ZheJiangYongKangConfig } from '@/pages/mock/jiangnan';
 import IconFont from '@/pages/component/IconFont';
 import { useModel } from 'umi';
+import { OptionChild } from '@/pages/interface';
 
 const defaultSettings = {
   enableDragging: true, // 是否开启地图可拖拽缩放
@@ -35,7 +36,8 @@ const MapContainer: React.FC<MapContainerProps> = () => {
   // mapType为对象，因此必须来用type作为button group 的key
   const [mapType, setMapType] = useState<any>(BMAP_SATELLITE_MAP);
   // @ts-ignore
-  const { children2, center } = useModel('useMapModal');
+  const { children2, center, changeCenter, visible, changeVisible } =
+    useModel('useMapModal');
 
   useEffect(() => {
     switch (type) {
@@ -51,6 +53,12 @@ const MapContainer: React.FC<MapContainerProps> = () => {
     }
   }, [type]);
 
+  const handleClickToMoveCenter = (i: OptionChild) => {
+    changeCenter(
+      i?.lng ? { lng: i?.lng, lat: i?.lat } : ZheJiangYongKangConfig.center,
+    );
+  };
+
   return (
     <>
       <Map
@@ -60,6 +68,8 @@ const MapContainer: React.FC<MapContainerProps> = () => {
         center={center || ZheJiangYongKangConfig.center}
       >
         {children2?.map((i: any) => {
+          const label =
+            optionSelect?.filter((j) => j?.value === i?.type)?.[0]?.label || '';
           return (
             <CustomOverlay
               key={i?.type + '-' + i?.serialNumber}
@@ -68,22 +78,45 @@ const MapContainer: React.FC<MapContainerProps> = () => {
             >
               <div className={styles.tip}>
                 <Popover
+                  visible={visible}
+                  onVisibleChange={(vis) => changeVisible(vis)}
                   placement="right"
-                  title={'分区：' + i?.area}
+                  title={
+                    <Space>
+                      <span>{label ? '类目：' + label : ''}</span>
+                      <span>{label ? '编号：' + i?.serialNumber : ''}</span>
+                    </Space>
+                  }
                   content={
-                    <div>
-                      <div>编号：{i?.serialNumber}</div>
-                      <div>企业名称：{i?.companyName}</div>
-                      <div>注册地址：{i?.registerAddress}</div>
-                      <div>法定代表人：{i?.legalPerson}</div>
-                      <div>企业负责人：{i?.companyLeader}</div>
-                      <div>质量负责人：{i?.qualityLeader}</div>
-                      <div>联系电话：{i?.tel}</div>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      {i?.showList?.map(
+                        (
+                          s: {
+                            filed: string;
+                            value: string | number;
+                          },
+                          index: number,
+                        ) => {
+                          return (
+                            <Space
+                              key={
+                                i?.type + '-' + i?.serialNumber + '-' + index
+                              }
+                            >
+                              <span>{s?.filed}：</span>
+                              <span>{s?.value}</span>
+                            </Space>
+                          );
+                        },
+                      )}
                     </div>
                   }
                   trigger="click"
                 >
-                  <div style={{ position: 'relative' }}>
+                  <div
+                    style={{ position: 'relative' }}
+                    onClick={() => handleClickToMoveCenter(i)}
+                  >
                     <span
                       className={styles.num}
                       style={{
