@@ -7,39 +7,28 @@ import {
   ScaleControl,
 } from '@uiw/react-baidu-map';
 import styles from './index.less';
-import { createFromIconfontCN } from '@ant-design/icons';
 import { Popover } from 'antd';
-import { optionSelect } from '@/pages/mock/jiangnan';
-import { OptionItem } from '@/pages/interface';
+import {
+  optionSelect as options,
+  ZheJiangYongKangConfig,
+} from '@/pages/mock/jiangnan';
+import IconFont from '@/pages/component/IconFont';
+import { useModel } from 'umi';
 
-const IconFont = createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_3044025_3hmbyerhjhd.js',
-});
 const defaultSettings = {
   enableDragging: true, // 是否开启地图可拖拽缩放
   enableScrollWheelZoom: true, //是否开启鼠标滚轮缩放
-  currentCity: '浙江省永康市',
   zoom: 15, // 缩放级别 - 500米 3 - 19
-  center: {
-    lng: 120.034116,
-    lat: 28.875991,
-  },
+  currentCity: ZheJiangYongKangConfig.currentCity,
 };
 
-interface MapContainerProps {
-  value: number;
-  options: OptionItem[];
-}
+interface MapContainerProps {}
 
-const MapContainer: React.FC<MapContainerProps> = ({ value, options }) => {
+const MapContainer: React.FC<MapContainerProps> = () => {
+  // @ts-ignore
+  const { children2, center } = useModel('useMapModal');
   const handleClick = (event: any) => {
     console.log(event);
-  };
-  const [item, setItem] = useState<any>();
-
-  const handleOverlayClick = (e: any, item: any) => {
-    console.log(e, item);
-    setItem(item);
   };
 
   function markerRef(props: any) {
@@ -52,16 +41,16 @@ const MapContainer: React.FC<MapContainerProps> = ({ value, options }) => {
       );
     }
   }
-  const tg = options?.filter((i) => i?.value === value)?.[0];
-  const list = tg?.children || [];
+
   return (
     <>
       <Map
         {...(defaultSettings as any)}
         mapType={BMAP_SATELLITE_MAP}
         onClick={handleClick}
+        center={center || ZheJiangYongKangConfig.center}
       >
-        {list?.map((i: any) => {
+        {children2?.map((i: any) => {
           return (
             <CustomOverlay
               key={i?.type + '-' + i?.serialNumber}
@@ -69,10 +58,7 @@ const MapContainer: React.FC<MapContainerProps> = ({ value, options }) => {
               paneName="floatPane"
               position={{ lng: i?.lng, lat: i?.lat }}
             >
-              <div
-                className={styles.tip}
-                onClick={(e) => handleOverlayClick(e, i)}
-              >
+              <div className={styles.tip}>
                 <Popover
                   placement="right"
                   title={'分区：' + i?.area}
@@ -89,9 +75,22 @@ const MapContainer: React.FC<MapContainerProps> = ({ value, options }) => {
                   }
                   trigger="click"
                 >
-                  <div>
-                    <span className={styles.num}>{i?.serialNumber}</span>
-                    <IconFont style={{ fontSize: 32 }} type="icon-dingwei" />
+                  <div style={{ position: 'relative' }}>
+                    <span
+                      className={styles.num}
+                      style={{
+                        transform:
+                          i?.serialNumber < 99
+                            ? 'translate(-50%, -50%)'
+                            : 'scale(0.68) translate(-72%, -80%)',
+                      }}
+                    >
+                      {i?.serialNumber}
+                    </span>
+                    <IconFont
+                      style={{ fontSize: 32 }}
+                      type={`icon-dw-${i?.type || 1}`}
+                    />
                   </div>
                 </Popover>
               </div>
