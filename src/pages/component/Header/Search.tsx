@@ -30,7 +30,7 @@ const Search: React.FC = () => {
     children,
     search,
     changeCenter,
-    changeVisible,
+    changeVisibleStore,
   } = useModel('useMapModal');
   const renderItem = (i: OptionChild) => ({
     value: i?.showList?.filter((j) => Boolean(j?.search))?.[0]?.value || '',
@@ -87,7 +87,8 @@ const Search: React.FC = () => {
   const handleSelect = (value: string, option: any) => {
     changeSearch(value);
     changeTarget(option?.tg);
-    changeVisible(true);
+    const k = option?.tg?.type + '-' + option?.tg?.serialNumber;
+    changeVisibleStore(true, k);
   };
   return (
     <AutoComplete

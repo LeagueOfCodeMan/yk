@@ -36,7 +36,7 @@ const MapContainer: React.FC<MapContainerProps> = () => {
   // mapType为对象，因此必须来用type作为button group 的key
   const [mapType, setMapType] = useState<any>(BMAP_SATELLITE_MAP);
   // @ts-ignore
-  const { children2, center, changeCenter, visible, changeVisible } =
+  const { children2, center, changeCenter, changeVisibleStore, visibleStore } =
     useModel('useMapModal');
 
   useEffect(() => {
@@ -70,6 +70,7 @@ const MapContainer: React.FC<MapContainerProps> = () => {
         {children2?.map((i: any) => {
           const label =
             optionSelect?.filter((j) => j?.value === i?.type)?.[0]?.label || '';
+          const key = i?.type + '-' + i?.serialNumber;
           return (
             <CustomOverlay
               key={i?.type + '-' + i?.serialNumber}
@@ -78,8 +79,8 @@ const MapContainer: React.FC<MapContainerProps> = () => {
             >
               <div className={styles.tip}>
                 <Popover
-                  visible={visible}
-                  onVisibleChange={(vis) => changeVisible(vis)}
+                  visible={visibleStore[key]}
+                  onVisibleChange={(vis) => changeVisibleStore(vis, key)}
                   placement="right"
                   title={
                     <Space>

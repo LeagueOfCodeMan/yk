@@ -68,9 +68,11 @@ export default function useMapModel() {
   /**
    * popover visible控制
    */
-  const [visible, setVisible] = useState<boolean>(false);
-  const changeVisible = useCallback((vis) => {
-    setVisible(vis);
+  const [visibleStore, setVisibleStore] = useState<{ [key: string]: boolean }>(
+    {},
+  );
+  const changeVisibleStore = useCallback((vis, k) => {
+    setVisibleStore({ ...visibleStore, [k]: vis });
   }, []);
 
   return {
@@ -84,7 +86,7 @@ export default function useMapModel() {
     changeValue,
     children,
     children2,
-    visible,
-    changeVisible,
+    visibleStore,
+    changeVisibleStore,
   };
 }
