@@ -2,16 +2,12 @@ import React, { useState } from 'react';
 import ContentCenter from '@/pages/component/ContentCenter';
 import HeaderSearch from '@/pages/component/HeaderSearch';
 import styles from './index.less';
-import { optionSelect } from '@/pages/mock/constants';
+import { optionSelect } from '@/pages/mock/jiangnan';
 
 export default () => {
-  const [value, setValue] = useState<string>(optionSelect?.[0]?.value);
-  const handleTypeChange = (val: string) => {
-    console.log(val, 'change');
+  const [value, setValue] = useState<number>(optionSelect?.[0]?.value);
+  const handleTypeChange = (val: number) => {
     setValue(val);
-  };
-  const handleTypeSearch = (val: string) => {
-    console.log(val, 'search');
   };
 
   return (
@@ -20,12 +16,11 @@ export default () => {
         <HeaderSearch
           value={value}
           handleChange={handleTypeChange}
-          handleSearch={handleTypeSearch}
-          options={optionSelect}
+          options={optionSelect as any}
         />
       </div>
       <div className={styles.content}>
-        <ContentCenter value={value} />
+        <ContentCenter value={value} options={optionSelect as any} />
       </div>
     </div>
   );

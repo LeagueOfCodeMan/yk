@@ -1,21 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
-  APILoader,
   CustomOverlay,
-  InfoWindow,
   Map,
   MapTypeControl,
-  Marker,
   NavigationControl,
-  PanoramaControl,
-  PointCollection,
-  requireScript,
   ScaleControl,
 } from '@uiw/react-baidu-map';
 import styles from './index.less';
 import { createFromIconfontCN } from '@ant-design/icons';
-import { handleMarkerData } from '@/pages/utils';
 import { Popover } from 'antd';
+import { optionSelect } from '@/pages/mock/jiangnan';
+import { OptionItem } from '@/pages/interface';
 
 const IconFont = createFromIconfontCN({
   scriptUrl: '//at.alicdn.com/t/font_3044025_3hmbyerhjhd.js',
@@ -31,21 +26,23 @@ const defaultSettings = {
   },
 };
 
-const overlayList = handleMarkerData();
-const MapContainer: React.FC<any> = () => {
+interface MapContainerProps {
+  value: number;
+  options: OptionItem[];
+}
+
+const MapContainer: React.FC<MapContainerProps> = ({ value, options }) => {
   const handleClick = (event: any) => {
     console.log(event);
   };
-  const [visiable, setVisiable] = useState(false);
   const [item, setItem] = useState<any>();
 
   const handleOverlayClick = (e: any, item: any) => {
     console.log(e, item);
-    setVisiable(true);
     setItem(item);
   };
 
-  function markerRef(props) {
+  function markerRef(props: any) {
     if (props && props.customOverlay) {
       console.log(
         'CustomOverlay::',
@@ -55,7 +52,8 @@ const MapContainer: React.FC<any> = () => {
       );
     }
   }
-
+  const tg = options?.filter((i) => i?.value === value)?.[0];
+  const list = tg?.children || [];
   return (
     <>
       <Map
@@ -63,17 +61,13 @@ const MapContainer: React.FC<any> = () => {
         mapType={BMAP_SATELLITE_MAP}
         onClick={handleClick}
       >
-        {overlayList?.map((i: any) => {
+        {list?.map((i: any) => {
           return (
             <CustomOverlay
-              key={i?.pid + '-' + i?.serialNumber}
+              key={i?.type + '-' + i?.serialNumber}
               ref={markerRef}
               paneName="floatPane"
               position={{ lng: i?.lng, lat: i?.lat }}
-              style={{
-                whiteSpace: 'nowrap',
-                // transform: `translateX(-50%)`,
-              }}
             >
               <div
                 className={styles.tip}
@@ -81,7 +75,7 @@ const MapContainer: React.FC<any> = () => {
               >
                 <Popover
                   placement="right"
-                  title={'分区' + i?.area}
+                  title={'分区：' + i?.area}
                   content={
                     <div>
                       <div>编号：{i?.serialNumber}</div>

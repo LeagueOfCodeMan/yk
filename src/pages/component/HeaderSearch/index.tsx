@@ -1,22 +1,20 @@
 import React from 'react';
 import { Input, Select } from 'antd';
 import styles from './index.less';
+import { OptionItem } from '@/pages/interface';
 const { Option } = Select;
 
 export interface HeaderSearchProps {
-  value: string;
-  handleSearch: (value: string) => void;
-  handleChange: (value: string) => void;
-  options: { label: string; value: string; [propName: string]: any }[];
+  value: number;
+  handleChange: (value: number) => void;
+  options: OptionItem[];
 }
 
 const HeaderSearch: React.FC<HeaderSearchProps> = (props) => {
-  const { value, handleSearch, handleChange, options } = props;
+  const { value, handleChange, options } = props;
+  const tg = options?.filter((i) => i?.value === value)?.[0];
   return (
-    <div
-      className={styles.headerSearch}
-      style={options?.filter((i) => i?.value === value)?.[0]?.style || {}}
-    >
+    <div className={styles.headerSearch} style={tg?.style || {}}>
       <div className={styles.selectLabel}>
         <Select
           bordered={false}
@@ -27,7 +25,6 @@ const HeaderSearch: React.FC<HeaderSearchProps> = (props) => {
           filterOption={(input, option) =>
             option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
-          onSearch={handleSearch}
           onChange={handleChange}
           notFoundContent={null}
         >
@@ -39,7 +36,7 @@ const HeaderSearch: React.FC<HeaderSearchProps> = (props) => {
         </Select>
       </div>
       <div className={styles.title}>
-        {options?.filter((i) => i?.value === value)?.[0]?.label}
+        {options?.filter((i) => i?.value === value)?.[0]?.title}
       </div>
       <div className={styles.inputSearch}>
         <Input.Search
