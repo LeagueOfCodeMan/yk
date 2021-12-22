@@ -94,7 +94,7 @@ const Search: React.FC<{}> = () => {
       onSearch={handleSearch}
       onSelect={handleSelect}
     >
-      <Input prefix={<SearchOutlined />} placeholder="全类目模糊搜索" />
+      <Input prefix={<SearchOutlined />} placeholder="所选类目模糊搜索" />
     </AutoComplete>
   );
 };

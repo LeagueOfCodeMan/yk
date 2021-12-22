@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 import {
+  Control,
   CustomOverlay,
   Map,
-  MapTypeControl,
   NavigationControl,
   ScaleControl,
 } from '@uiw/react-baidu-map';
 import styles from './index.less';
-import { Popover } from 'antd';
-import {
-  optionSelect as options,
-  ZheJiangYongKangConfig,
-} from '@/pages/mock/jiangnan';
+import { Popover, Radio } from 'antd';
+import { ZheJiangYongKangConfig } from '@/pages/mock/jiangnan';
 import IconFont from '@/pages/component/IconFont';
 import { useModel } from 'umi';
 
@@ -24,29 +21,28 @@ const defaultSettings = {
 
 interface MapContainerProps {}
 
+/**
+ * type类型 BMAP_SATELLITE_MAP BMAP_NORMAL_MAP BMAP_HYBRID_MAP 暂不支持三维
+ */
+
 const MapContainer: React.FC<MapContainerProps> = () => {
+  const optionsWithMapType = [
+    { label: '卫星', value: BMAP_SATELLITE_MAP },
+    { label: '地图', value: BMAP_NORMAL_MAP },
+    { label: '混合', value: BMAP_HYBRID_MAP },
+  ];
+  const [mapType, setMapType] = useState<any>(BMAP_SATELLITE_MAP);
   // @ts-ignore
   const { children2, center } = useModel('useMapModal');
   const handleClick = (event: any) => {
     console.log(event);
   };
 
-  function markerRef(props: any) {
-    if (props && props.customOverlay) {
-      console.log(
-        'CustomOverlay::',
-        props.customOverlay,
-        props.map,
-        props.BMap,
-      );
-    }
-  }
-
   return (
     <>
       <Map
         {...(defaultSettings as any)}
-        mapType={BMAP_SATELLITE_MAP}
+        mapType={mapType}
         onClick={handleClick}
         center={center || ZheJiangYongKangConfig.center}
       >
@@ -54,7 +50,6 @@ const MapContainer: React.FC<MapContainerProps> = () => {
           return (
             <CustomOverlay
               key={i?.type + '-' + i?.serialNumber}
-              ref={markerRef}
               paneName="floatPane"
               position={{ lng: i?.lng, lat: i?.lat }}
             >
@@ -99,10 +94,16 @@ const MapContainer: React.FC<MapContainerProps> = () => {
         })}
         <NavigationControl />
         <ScaleControl />
-        <MapTypeControl
-          offset={new BMap.Size(40, 40)}
-          anchor={BMAP_ANCHOR_BOTTOM_RIGHT}
-        />
+        <Control anchor={BMAP_ANCHOR_TOP_RIGHT}>
+          <Radio.Group
+            size="small"
+            options={optionsWithMapType as any}
+            onChange={(e) => setMapType(e.target.value)}
+            value={mapType}
+            optionType="button"
+            buttonStyle="solid"
+          />
+        </Control>
       </Map>
     </>
   );
