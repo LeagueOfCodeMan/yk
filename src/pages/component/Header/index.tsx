@@ -6,7 +6,6 @@ import {
   ZheJiangYongKangConfig,
 } from '@/pages/mock/jiangnan';
 import Search from '@/pages/component/Header/Search';
-import { OptionChild } from '@/pages/interface';
 import { useModel } from 'umi';
 
 const { Option } = Select;

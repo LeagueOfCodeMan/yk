@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Control,
   CustomOverlay,
@@ -27,23 +27,36 @@ interface MapContainerProps {}
 
 const MapContainer: React.FC<MapContainerProps> = () => {
   const optionsWithMapType = [
-    { label: '卫星', value: BMAP_SATELLITE_MAP },
-    { label: '地图', value: BMAP_NORMAL_MAP },
-    { label: '混合', value: BMAP_HYBRID_MAP },
+    { label: '卫星', value: 1 },
+    { label: '地图', value: 2 },
+    { label: '混合', value: 3 },
   ];
+  const [type, setType] = useState<number>(1);
+  // mapType为对象，因此必须来用type作为button group 的key
   const [mapType, setMapType] = useState<any>(BMAP_SATELLITE_MAP);
   // @ts-ignore
   const { children2, center } = useModel('useMapModal');
-  const handleClick = (event: any) => {
-    console.log(event);
-  };
+
+  useEffect(() => {
+    switch (type) {
+      case 1:
+        setMapType(BMAP_SATELLITE_MAP);
+        break;
+      case 2:
+        setMapType(BMAP_NORMAL_MAP);
+        break;
+      default:
+        setMapType(BMAP_HYBRID_MAP);
+        break;
+    }
+  }, [type]);
 
   return (
     <>
       <Map
+        className={styles.map}
         {...(defaultSettings as any)}
         mapType={mapType}
-        onClick={handleClick}
         center={center || ZheJiangYongKangConfig.center}
       >
         {children2?.map((i: any) => {
@@ -98,8 +111,8 @@ const MapContainer: React.FC<MapContainerProps> = () => {
           <Radio.Group
             size="small"
             options={optionsWithMapType as any}
-            onChange={(e) => setMapType(e.target.value)}
-            value={mapType}
+            onChange={(e) => setType(e.target.value)}
+            value={type}
             optionType="button"
             buttonStyle="solid"
           />
