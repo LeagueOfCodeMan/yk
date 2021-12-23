@@ -66,13 +66,6 @@ const MapContainer: React.FC<MapContainerProps> = () => {
   };
 
   const handleMapClick = (i: any) => {
-    console.log(i, 'click');
-    message.success({
-      content: (
-        <Paragraph copyable>{i?.point?.lng + ',' + i?.point?.lat}</Paragraph>
-      ),
-      duration: 10,
-    });
     changeOpen(false);
   };
 
