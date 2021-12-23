@@ -83,7 +83,7 @@ const Search: React.FC = () => {
   const onFocus = () => {
     changeOpen(true);
   };
-
+  console.log(data.length);
   return (
     <AutoComplete
       dropdownMatchSelectWidth={600}

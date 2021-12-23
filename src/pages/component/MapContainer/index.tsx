@@ -67,6 +67,7 @@ const MapContainer: React.FC<MapContainerProps> = () => {
         center={center || ZheJiangYongKangConfig.center}
         onClick={handleMapClick}
         zoom={15}
+        minZoom={10}
       >
         {children2?.map((i: any) => {
           const label =

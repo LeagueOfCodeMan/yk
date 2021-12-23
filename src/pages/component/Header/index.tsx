@@ -17,7 +17,6 @@ const HeaderSearch: React.FC<HeaderSearchProps> = (props) => {
   const { value, changeValue, changeCenter, changeSearch } =
     useModel('useMapModal');
   const tg = options?.filter((i) => i?.value === value)?.[0];
-
   return (
     <div className={styles.headerSearch} style={tg?.style || {}}>
       <div className={styles.selectLabel}>
