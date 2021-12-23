@@ -5,7 +5,7 @@ import { OptionChild } from '@/pages/interface';
 import IconFont from '@/pages/component/IconFont';
 import Highlighter from 'react-highlight-words';
 import { useModel } from 'umi';
-import { ZheJiangYongKangConfig } from '@/pages/mock/jiangnan';
+import { ZheJiangYongKangConfig } from '@/pages/mock/jl';
 
 function debounce(fn: Function, delay: number) {
   let timerId: any = null;

@@ -4,7 +4,7 @@ import styles from './index.less';
 import {
   optionSelect as options,
   ZheJiangYongKangConfig,
-} from '@/pages/mock/jiangnan';
+} from '@/pages/mock/jl';
 import Search from '@/pages/component/Header/Search';
 import { useModel } from 'umi';
 

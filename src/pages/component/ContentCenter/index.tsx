@@ -1,7 +1,7 @@
 import React from 'react';
 import MapContainer from '@/pages/component/MapContainer';
 import { APILoader } from '@uiw/react-baidu-map';
-import { AK } from '@/pages/mock/jiangnan';
+import { AK } from '@/pages/mock/jl';
 
 const ContentCenter: React.FC<{}> = () => {
   return (

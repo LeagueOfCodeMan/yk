@@ -1,4 +1,4 @@
-import { optionSelect, ZheJiangYongKangConfig } from '@/pages/mock/jiangnan';
+import { optionSelect, ZheJiangYongKangConfig } from '@/pages/mock/jl';
 import { useCallback, useEffect, useState } from 'react';
 import { OptionChild } from '@/pages/interface';
 
@@ -15,7 +15,6 @@ export default function useMapModel() {
    */
   const [target, setTarget] = useState<OptionChild>();
   const changeTarget = useCallback((v) => {
-    console.log(v, 'setTarget');
     setCenter(
       v?.lng ? { lng: v?.lng, lat: v?.lat } : ZheJiangYongKangConfig.center,
     );

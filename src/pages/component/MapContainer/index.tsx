@@ -8,7 +8,7 @@ import {
 } from '@uiw/react-baidu-map';
 import styles from './index.less';
 import { Popover, Radio, Space } from 'antd';
-import { optionSelect, ZheJiangYongKangConfig } from '@/pages/mock/jiangnan';
+import { optionSelect, ZheJiangYongKangConfig } from '@/pages/mock/jl';
 import IconFont from '@/pages/component/IconFont';
 import { useModel } from 'umi';
 import { OptionChild } from '@/pages/interface';
