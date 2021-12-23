@@ -77,7 +77,6 @@ const Search: React.FC = () => {
   }));
 
   const handleSearch = (value: string) => {
-    console.log(value);
     // 补全时仅做过滤
     if (!value) {
       changeCenter(ZheJiangYongKangConfig.center);
