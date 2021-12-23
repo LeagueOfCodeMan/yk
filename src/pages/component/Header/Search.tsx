@@ -7,21 +7,6 @@ import Highlighter from 'react-highlight-words';
 import { useModel } from 'umi';
 import { ZheJiangYongKangConfig } from '@/pages/mock/jl';
 
-function debounce(fn: Function, delay: number) {
-  let timerId: any = null;
-  return function () {
-    // @ts-ignore
-    const context = this;
-    if (timerId) {
-      window.clearTimeout(timerId);
-    }
-    timerId = setTimeout(() => {
-      fn.apply(context, arguments);
-      timerId = null;
-    }, delay);
-  };
-}
-
 const Search: React.FC = () => {
   // @ts-ignore
   const {
@@ -31,6 +16,8 @@ const Search: React.FC = () => {
     search,
     changeCenter,
     changeVisibleStore,
+    changeOpen,
+    open,
   } = useModel('useMapModal');
   const renderItem = (i: OptionChild) => ({
     value: i?.showList?.filter((j) => Boolean(j?.search))?.[0]?.value || '',
@@ -82,6 +69,7 @@ const Search: React.FC = () => {
       changeCenter(ZheJiangYongKangConfig.center);
     }
     changeSearch(value);
+    changeOpen(true);
   };
 
   const handleSelect = (value: string, option: any) => {
@@ -90,12 +78,18 @@ const Search: React.FC = () => {
     const k = option?.tg?.type + '-' + option?.tg?.serialNumber;
     changeVisibleStore(true, k);
   };
+
+  const handleMouseEnter = () => {
+    changeOpen(true);
+  };
+
   return (
     <AutoComplete
       dropdownClassName="certain-category-search-dropdown"
       dropdownMatchSelectWidth={600}
       allowClear
       // value={search}
+      open={open}
       style={{ width: 250 }}
       options={data?.map((d) => renderItem(d))}
       filterOption={(inputValue, option) =>
@@ -106,6 +100,7 @@ const Search: React.FC = () => {
       backfill
       onSearch={handleSearch}
       onSelect={handleSelect}
+      onMouseEnter={handleMouseEnter}
     >
       <Input prefix={<SearchOutlined />} placeholder="所选类目模糊搜索" />
     </AutoComplete>

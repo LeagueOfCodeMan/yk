@@ -74,6 +74,14 @@ export default function useMapModel() {
     setVisibleStore({ ...visibleStore, [k]: vis });
   }, []);
 
+  /**
+   * search focus 判断
+   */
+  const [open, setOpen] = useState<boolean>(false);
+  const changeOpen = useCallback((v) => {
+    setOpen(v);
+  }, []);
+
   return {
     search,
     changeSearch,
@@ -87,5 +95,7 @@ export default function useMapModel() {
     children2,
     visibleStore,
     changeVisibleStore,
+    open,
+    changeOpen,
   };
 }

@@ -7,7 +7,7 @@ import {
   ScaleControl,
 } from '@uiw/react-baidu-map';
 import styles from './index.less';
-import { Popover, Radio, Space } from 'antd';
+import { message, Popover, Radio, Space } from 'antd';
 import { optionSelect, ZheJiangYongKangConfig } from '@/pages/mock/jl';
 import IconFont from '@/pages/component/IconFont';
 import { useModel } from 'umi';
@@ -36,8 +36,14 @@ const MapContainer: React.FC<MapContainerProps> = () => {
   // mapType为对象，因此必须来用type作为button group 的key
   const [mapType, setMapType] = useState<any>(BMAP_SATELLITE_MAP);
   // @ts-ignore
-  const { children2, center, changeCenter, changeVisibleStore, visibleStore } =
-    useModel('useMapModal');
+  const {
+    children2,
+    center,
+    changeCenter,
+    changeVisibleStore,
+    visibleStore,
+    changeOpen,
+  } = useModel('useMapModal');
 
   useEffect(() => {
     switch (type) {
@@ -59,6 +65,15 @@ const MapContainer: React.FC<MapContainerProps> = () => {
     );
   };
 
+  const handleMapClick = (i: any) => {
+    console.log(i, 'click');
+    message.success({
+      content: `${i?.point?.lng},${i?.point?.lat}`,
+      duration: 10,
+    });
+    changeOpen(false);
+  };
+
   return (
     <>
       <Map
@@ -66,6 +81,7 @@ const MapContainer: React.FC<MapContainerProps> = () => {
         {...(defaultSettings as any)}
         mapType={mapType}
         center={center || ZheJiangYongKangConfig.center}
+        onClick={handleMapClick}
       >
         {children2?.map((i: any) => {
           const label =
