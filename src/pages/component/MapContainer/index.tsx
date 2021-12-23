@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Control,
   CustomOverlay,
@@ -7,16 +7,15 @@ import {
   ScaleControl,
 } from '@uiw/react-baidu-map';
 import styles from './index.less';
-import { message, Popover, Radio, Space, Typography } from 'antd';
+import { Popover, Radio, Space } from 'antd';
 import { optionSelect, ZheJiangYongKangConfig } from '@/pages/mock/jl';
 import IconFont from '@/pages/component/IconFont';
 import { useModel } from 'umi';
 import { OptionChild } from '@/pages/interface';
-const { Paragraph } = Typography;
+
 const defaultSettings = {
   enableDragging: true, // 是否开启地图可拖拽缩放
   enableScrollWheelZoom: true, //是否开启鼠标滚轮缩放
-  zoom: 15, // 缩放级别 - 500米 3 - 19
   currentCity: ZheJiangYongKangConfig.currentCity,
 };
 
@@ -27,6 +26,7 @@ interface MapContainerProps {}
  */
 
 const MapContainer: React.FC<MapContainerProps> = () => {
+  const map = useRef<any>(null);
   const optionsWithMapType = [
     { label: '卫星', value: 1 },
     { label: '地图', value: 2 },
@@ -36,14 +36,8 @@ const MapContainer: React.FC<MapContainerProps> = () => {
   // mapType为对象，因此必须来用type作为button group 的key
   const [mapType, setMapType] = useState<any>(BMAP_SATELLITE_MAP);
   // @ts-ignore
-  const {
-    children2,
-    center,
-    changeCenter,
-    changeVisibleStore,
-    visibleStore,
-    changeOpen,
-  } = useModel('useMapModal');
+  const { children2, center, changeVisibleStore, visibleStore, changeOpen } =
+    useModel('useMapModal');
 
   useEffect(() => {
     switch (type) {
@@ -59,12 +53,6 @@ const MapContainer: React.FC<MapContainerProps> = () => {
     }
   }, [type]);
 
-  const handleClickToMoveCenter = (i: OptionChild) => {
-    changeCenter(
-      i?.lng ? { lng: i?.lng, lat: i?.lat } : ZheJiangYongKangConfig.center,
-    );
-  };
-
   const handleMapClick = (i: any) => {
     changeOpen(false);
   };
@@ -72,11 +60,13 @@ const MapContainer: React.FC<MapContainerProps> = () => {
   return (
     <>
       <Map
+        ref={map}
         className={styles.map}
         {...(defaultSettings as any)}
         mapType={mapType}
         center={center || ZheJiangYongKangConfig.center}
         onClick={handleMapClick}
+        zoom={15}
       >
         {children2?.map((i: any) => {
           const label =
@@ -125,10 +115,7 @@ const MapContainer: React.FC<MapContainerProps> = () => {
                   }
                   trigger="click"
                 >
-                  <div
-                    style={{ position: 'relative' }}
-                    onClick={() => handleClickToMoveCenter(i)}
-                  >
+                  <div style={{ position: 'relative' }}>
                     <span
                       className={styles.num}
                       style={{

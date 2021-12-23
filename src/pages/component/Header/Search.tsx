@@ -1,11 +1,10 @@
 import { AutoComplete, Input, Space } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { OptionChild } from '@/pages/interface';
 import IconFont from '@/pages/component/IconFont';
 import Highlighter from 'react-highlight-words';
 import { useModel } from 'umi';
-import { ZheJiangYongKangConfig } from '@/pages/mock/jl';
 
 const Search: React.FC = () => {
   // @ts-ignore
@@ -14,7 +13,6 @@ const Search: React.FC = () => {
     changeTarget,
     children,
     search,
-    changeCenter,
     changeVisibleStore,
     changeOpen,
     open,
@@ -63,32 +61,34 @@ const Search: React.FC = () => {
     searchKey: i?.showList?.map((s) => s?.value)?.join(' '),
   }));
 
-  const handleSearch = (value: string) => {
-    // 补全时仅做过滤
-    if (!value) {
-      changeCenter(ZheJiangYongKangConfig.center);
-    }
-    changeSearch(value);
-    changeOpen(true);
-  };
-
   const handleSelect = (value: string, option: any) => {
-    changeSearch(value);
     changeTarget(option?.tg);
     const k = option?.tg?.type + '-' + option?.tg?.serialNumber;
     changeVisibleStore(true, k);
   };
 
-  const handleMouseEnter = () => {
+  const [value, setValue] = useState<string>('');
+
+  useEffect(() => {
+    setValue(search);
+  }, [search]);
+
+  const handleChange = (v: string) => {
+    // 补全时仅做过滤
+    setValue(v);
+    changeSearch(v);
+    changeOpen(true);
+  };
+
+  const onFocus = () => {
     changeOpen(true);
   };
 
   return (
     <AutoComplete
-      dropdownClassName="certain-category-search-dropdown"
       dropdownMatchSelectWidth={600}
       allowClear
-      // value={search}
+      value={value}
       open={open}
       style={{ width: 250 }}
       options={data?.map((d) => renderItem(d))}
@@ -98,9 +98,9 @@ const Search: React.FC = () => {
           ?.indexOf(inputValue?.toUpperCase()) !== -1
       }
       backfill
-      onSearch={handleSearch}
       onSelect={handleSelect}
-      onMouseEnter={handleMouseEnter}
+      onChange={handleChange}
+      onFocus={onFocus}
     >
       <Input prefix={<SearchOutlined />} placeholder="所选类目模糊搜索" />
     </AutoComplete>
