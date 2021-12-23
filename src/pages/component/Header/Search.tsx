@@ -76,13 +76,14 @@ const Search: React.FC = () => {
     searchKey: i?.showList?.map((s) => s?.value)?.join(' '),
   }));
 
-  const handleSearch = debounce((value: string) => {
+  const handleSearch = (value: string) => {
+    console.log(value);
     // 补全时仅做过滤
     if (!value) {
       changeCenter(ZheJiangYongKangConfig.center);
     }
     changeSearch(value);
-  }, 500);
+  };
 
   const handleSelect = (value: string, option: any) => {
     changeSearch(value);
@@ -95,7 +96,7 @@ const Search: React.FC = () => {
       dropdownClassName="certain-category-search-dropdown"
       dropdownMatchSelectWidth={600}
       allowClear
-      value={search}
+      // value={search}
       style={{ width: 250 }}
       options={data?.map((d) => renderItem(d))}
       filterOption={(inputValue, option) =>
