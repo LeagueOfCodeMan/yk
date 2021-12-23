@@ -144,7 +144,10 @@ excelFilePaths.forEach((i) => {
       sheetHeader.splice(sheetHeader.length - 1, 1);
       firstSheet[0];
       firstSheet.forEach((j, index) => {
-        const lgt = (j[8] && j[8].split(',').map((i) => i - 0)) || [0, 0];
+        const lgt = !j[9]
+          ? (j[8] && j[8].split(',').map((i) => i - 0)) || [0, 0]
+          : [j[8], j[9]];
+        console.log(lgt);
         const showList = j.slice(1, j.length - 1).map((k, index2) => ({
           filed: sheetHeader[index2],
           value: k,
@@ -164,7 +167,7 @@ excelFilePaths.forEach((i) => {
   }
 });
 
-console.log(result.filter((r) => r.type === 9)[0]);
+console.log(result.filter((r) => r.type === 9).length);
 console.log(result[result.length - 1]);
 
 try {
