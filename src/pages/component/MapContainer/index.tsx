@@ -7,12 +7,12 @@ import {
   ScaleControl,
 } from '@uiw/react-baidu-map';
 import styles from './index.less';
-import { message, Popover, Radio, Space } from 'antd';
+import { message, Popover, Radio, Space, Typography } from 'antd';
 import { optionSelect, ZheJiangYongKangConfig } from '@/pages/mock/jl';
 import IconFont from '@/pages/component/IconFont';
 import { useModel } from 'umi';
 import { OptionChild } from '@/pages/interface';
-
+const { Paragraph } = Typography;
 const defaultSettings = {
   enableDragging: true, // 是否开启地图可拖拽缩放
   enableScrollWheelZoom: true, //是否开启鼠标滚轮缩放
@@ -68,7 +68,9 @@ const MapContainer: React.FC<MapContainerProps> = () => {
   const handleMapClick = (i: any) => {
     console.log(i, 'click');
     message.success({
-      content: `${i?.point?.lng},${i?.point?.lat}`,
+      content: (
+        <Paragraph copyable>{i?.point?.lng + ',' + i?.point?.lat}</Paragraph>
+      ),
       duration: 10,
     });
     changeOpen(false);
