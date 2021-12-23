@@ -3,7 +3,6 @@ const path = require('path');
 const fs = require('fs');
 const cwdDir = process.cwd();
 const outputDir = path.resolve(cwdDir, 'src/pages/mock');
-console.log(outputDir, 'outputDir');
 const pathDir = path.resolve(cwdDir, 'data');
 const files = fs.readdirSync(pathDir);
 const excelFilePaths = files
@@ -139,19 +138,38 @@ excelFilePaths.forEach((i) => {
         });
       });
       break;
+    case 9:
+      sheetHeader = firstSheet.splice(0, 2)[1];
+      sheetHeader.splice(0, 1);
+      sheetHeader.splice(sheetHeader.length - 1, 1);
+      firstSheet[0];
+      firstSheet.forEach((j, index) => {
+        const lgt = (j[8] && j[8].split(',').map((i) => i - 0)) || [0, 0];
+        const showList = j.slice(1, j.length - 1).map((k, index2) => ({
+          filed: sheetHeader[index2],
+          value: k,
+          search: [0, 1].indexOf(index2) > -1 ? index2 + 1 : 0,
+        }));
+        result.push({
+          type: i.type,
+          serialNumber: j[0],
+          lng: lgt[0],
+          lat: lgt[1],
+          showList: showList,
+        });
+      });
+      break;
     default:
       break;
   }
 });
 
-console.log(result.filter((r) => !!r.lng).length);
+console.log(result.filter((r) => r.type === 9)[0]);
 console.log(result[result.length - 1]);
 
 try {
   const ret = result.filter((r) => !!r.lng);
-  const content = `
-    export default ${JSON.stringify(ret)}
-  `;
+  const content = `export default ${JSON.stringify(ret)}`;
   const data = fs.writeFileSync(path.resolve(outputDir, 'jl/data.ts'), content);
   //文件写入成功。
   console.log(data);
