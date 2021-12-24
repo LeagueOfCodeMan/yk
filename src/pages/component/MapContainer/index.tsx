@@ -7,12 +7,16 @@ import {
   ScaleControl,
 } from '@uiw/react-baidu-map';
 import styles from './index.less';
-import { Popover, Radio, Space } from 'antd';
-import { optionSelect, ZheJiangYongKangConfig } from '@/pages/mock/jl';
+import { Popover, Radio, Space, Modal, InputNumber, message } from 'antd';
+import {
+  optionSelect as options,
+  optionSelect,
+  ZheJiangYongKangConfig,
+} from '@/pages/mock/jl';
 import IconFont from '@/pages/component/IconFont';
 import { useModel } from 'umi';
-import { OptionChild } from '@/pages/interface';
 
+const { confirm } = Modal;
 const defaultSettings = {
   enableDragging: true, // 是否开启地图可拖拽缩放
   enableScrollWheelZoom: true, //是否开启鼠标滚轮缩放
@@ -36,8 +40,14 @@ const MapContainer: React.FC<MapContainerProps> = () => {
   // mapType为对象，因此必须来用type作为button group 的key
   const [mapType, setMapType] = useState<any>(BMAP_SATELLITE_MAP);
   // @ts-ignore
-  const { children2, center, changeVisibleStore, visibleStore, changeOpen } =
-    useModel('useMapModal');
+  const {
+    children2,
+    value,
+    center,
+    changeVisibleStore,
+    visibleStore,
+    changeOpen,
+  } = useModel('useMapModal');
 
   useEffect(() => {
     switch (type) {
@@ -56,9 +66,60 @@ const MapContainer: React.FC<MapContainerProps> = () => {
   const handleMapClick = (i: any) => {
     changeOpen(false);
   };
-
+  /**
+   * 临时录入数据使用
+   */
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [item, setItem] = useState<any>();
+  const [vv, setVV] = useState<number>(1);
+  const handleOk = async () => {
+    fetch(
+      '/api/mark?type=' +
+        value +
+        '&serialNumber=' +
+        vv +
+        '&lng=' +
+        item?.point?.lng +
+        '&lat=' +
+        item?.point?.lat,
+    )
+      .then((data) => data.text())
+      .then((res) => {
+        message.info(res);
+      });
+    setIsModalVisible(false);
+  };
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+  const onRightClick = (i: any) => {
+    setItem(i);
+    setIsModalVisible(true);
+  };
+  const onChange = (v: number) => {
+    setVV(v);
+  };
+  const tg = options?.filter((i) => i?.value === value)?.[0];
   return (
     <>
+      <Modal
+        title={
+          <span>
+            当前经纬度：{'\r' + item?.point?.lng + '\r' + item?.point?.lat}
+          </span>
+        }
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <div>
+          <div>当前类目：{tg?.label}</div>
+          <div>
+            序号：
+            <InputNumber value={vv} onChange={onChange} />
+          </div>
+        </div>
+      </Modal>
       <Map
         ref={map}
         className={styles.map}
@@ -66,6 +127,7 @@ const MapContainer: React.FC<MapContainerProps> = () => {
         mapType={mapType}
         center={center || ZheJiangYongKangConfig.center}
         onClick={handleMapClick}
+        onRightClick={onRightClick}
         zoom={15}
         minZoom={10}
       >

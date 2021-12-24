@@ -147,7 +147,6 @@ excelFilePaths.forEach((i) => {
         const lgt = !j[9]
           ? (j[8] && j[8].split(',').map((i) => i - 0)) || [0, 0]
           : [j[8], j[9]];
-        console.log(lgt);
         const showList = j.slice(1, j.length - 1).map((k, index2) => ({
           filed: sheetHeader[index2],
           value: k,
