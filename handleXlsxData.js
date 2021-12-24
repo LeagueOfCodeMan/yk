@@ -13,7 +13,7 @@ function main() {
   const result = handleExcelReturnJsonData(excelFilePaths);
   console.log(result.filter((r) => r.type === 9).length);
   console.log(result[result.length - 1]);
-  writeExcelJsonDataToPath(result, outputDir);
+  writeExcelJsonDataToPath(result, path.resolve(outputDir, 'jl/data.ts'));
   writeCsvToDataCsv(result, csvPath);
 }
 main();
@@ -115,24 +115,6 @@ function handleExcelReturnJsonData(paths) {
         });
         break;
       case 5:
-        sheetHeader = firstSheet.splice(0, 1)[0];
-        sheetHeader.splice(0, 1);
-        sheetHeader.splice(sheetHeader.length - 2, 2);
-        firstSheet.forEach((j, index) => {
-          const showList = j.slice(1, j.length - 2).map((k, index2) => ({
-            filed: sheetHeader[index2],
-            value: k,
-            search: [0, 1].indexOf(index2) > -1 ? index2 + 1 : 0,
-          }));
-          result.push({
-            type: i.type,
-            serialNumber: j[0],
-            lng: j[6],
-            lat: j[7],
-            showList: showList,
-          });
-        });
-        break;
       case 6:
       case 7:
       case 8:
@@ -189,7 +171,7 @@ function writeExcelJsonDataToPath(result, path) {
   try {
     const ret = result.filter((r) => !!r.lng);
     const content = `export default ${JSON.stringify(ret)}`;
-    fs.writeFileSync(path.resolve(path, 'jl/data.ts'), content);
+    fs.writeFileSync(path, content);
     //文件写入成功。
   } catch (err) {
     console.error(err);

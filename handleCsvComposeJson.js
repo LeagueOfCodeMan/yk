@@ -38,7 +38,6 @@ async function handleCsv() {
  * @returns {Promise<boolean>}
  */
 async function writeCsv(item) {
-  console.log(item);
   let csvData = await handleCsv();
   csvData = csvData.filter(
     (i) =>

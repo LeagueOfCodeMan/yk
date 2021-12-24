@@ -32,7 +32,7 @@ export default function useMapModel() {
   /**
    * 左侧类目所选
    */
-  const [value, setValue] = useState<number>(0);
+  const [value, setValue] = useState<number>(1);
   const changeValue = useCallback((v) => {
     setValue(v);
   }, []);
@@ -95,6 +95,7 @@ export default function useMapModel() {
     children2,
     visibleStore,
     changeVisibleStore,
+    setVisibleStore,
     open,
     changeOpen,
   };

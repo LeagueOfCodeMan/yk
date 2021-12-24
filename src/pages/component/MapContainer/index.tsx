@@ -7,7 +7,9 @@ import {
   ScaleControl,
 } from '@uiw/react-baidu-map';
 import styles from './index.less';
-import { Popover, Radio, Space, Modal, InputNumber, message } from 'antd';
+import { InputNumber, message, Modal, Radio, Space } from 'antd';
+import { Popover } from 'antd-mobile';
+
 import {
   optionSelect as options,
   optionSelect,
@@ -16,7 +18,6 @@ import {
 import IconFont from '@/pages/component/IconFont';
 import { useModel } from 'umi';
 
-const { confirm } = Modal;
 const defaultSettings = {
   enableDragging: true, // 是否开启地图可拖拽缩放
   enableScrollWheelZoom: true, //是否开启鼠标滚轮缩放
@@ -28,6 +29,27 @@ interface MapContainerProps {}
 /**
  * type类型 BMAP_SATELLITE_MAP BMAP_NORMAL_MAP BMAP_HYBRID_MAP 暂不支持三维
  */
+
+export const os = () => {
+  var ua = navigator.userAgent,
+    isWindowsPhone = /(?:Windows Phone)/.test(ua),
+    isSymbian = /(?:SymbianOS)/.test(ua) || isWindowsPhone,
+    isAndroid = /(?:Android)/.test(ua),
+    isFireFox = /(?:Firefox)/.test(ua),
+    isChrome = /(?:Chrome|CriOS)/.test(ua),
+    isTablet =
+      /(?:iPad|PlayBook)/.test(ua) ||
+      (isAndroid && !/(?:Mobile)/.test(ua)) ||
+      (isFireFox && /(?:Tablet)/.test(ua)),
+    isPhone = /(?:iPhone)/.test(ua) && !isTablet,
+    isPc = !isPhone && !isAndroid && !isSymbian;
+  return {
+    isTablet: isTablet,
+    isPhone: isPhone,
+    isAndroid: isAndroid,
+    isPc: isPc,
+  };
+};
 
 const MapContainer: React.FC<MapContainerProps> = () => {
   const map = useRef<any>(null);
@@ -47,6 +69,7 @@ const MapContainer: React.FC<MapContainerProps> = () => {
     changeVisibleStore,
     visibleStore,
     changeOpen,
+    setVisibleStore,
   } = useModel('useMapModal');
 
   useEffect(() => {
@@ -127,6 +150,7 @@ const MapContainer: React.FC<MapContainerProps> = () => {
         mapType={mapType}
         center={center || ZheJiangYongKangConfig.center}
         onClick={handleMapClick}
+        onTouchStart={handleMapClick}
         onRightClick={onRightClick}
         zoom={15}
         minZoom={10}
@@ -146,14 +170,13 @@ const MapContainer: React.FC<MapContainerProps> = () => {
                   visible={visibleStore[key]}
                   onVisibleChange={(vis) => changeVisibleStore(vis, key)}
                   placement="right"
-                  title={
-                    <Space>
-                      <span>{label ? '类目：' + label : ''}</span>
-                      <span>{label ? '编号：' + i?.serialNumber : ''}</span>
-                    </Space>
-                  }
+                  trigger="click"
                   content={
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <Space>
+                        <span>{label ? '类目：' + label : ''}</span>
+                        <span>{label ? '编号：' + i?.serialNumber : ''}</span>
+                      </Space>
                       {i?.showList?.map(
                         (
                           s: {
@@ -176,9 +199,11 @@ const MapContainer: React.FC<MapContainerProps> = () => {
                       )}
                     </div>
                   }
-                  trigger="click"
                 >
-                  <div style={{ position: 'relative' }}>
+                  <div
+                    id={i?.type + '-' + i?.serialNumber}
+                    style={{ position: 'relative' }}
+                  >
                     <span
                       className={styles.num}
                       style={{

@@ -7,9 +7,7 @@ export default defineConfig({
   base: './',
   publicPath: './',
   hash: true,
-  dva: {
-    hmr: true,
-  },
+  mfsu: {},
   nodeModulesTransform: {
     type: 'none',
   },
