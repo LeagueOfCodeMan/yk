@@ -29,27 +29,6 @@ interface MapContainerProps {}
  * type类型 BMAP_SATELLITE_MAP BMAP_NORMAL_MAP BMAP_HYBRID_MAP 暂不支持三维
  */
 
-// export const os = () => {
-//   var ua = navigator.userAgent,
-//     isWindowsPhone = /(?:Windows Phone)/.test(ua),
-//     isSymbian = /(?:SymbianOS)/.test(ua) || isWindowsPhone,
-//     isAndroid = /(?:Android)/.test(ua),
-//     isFireFox = /(?:Firefox)/.test(ua),
-//     isChrome = /(?:Chrome|CriOS)/.test(ua),
-//     isTablet =
-//       /(?:iPad|PlayBook)/.test(ua) ||
-//       (isAndroid && !/(?:Mobile)/.test(ua)) ||
-//       (isFireFox && /(?:Tablet)/.test(ua)),
-//     isPhone = /(?:iPhone)/.test(ua) && !isTablet,
-//     isPc = !isPhone && !isAndroid && !isSymbian;
-//   return {
-//     isTablet: isTablet,
-//     isPhone: isPhone,
-//     isAndroid: isAndroid,
-//     isPc: isPc,
-//   };
-// };
-
 const MapContainer: React.FC<MapContainerProps> = () => {
   const map = useRef<any>(null);
   const optionsWithMapType = [
@@ -177,24 +156,24 @@ const MapContainer: React.FC<MapContainerProps> = () => {
   const tg = options?.filter((i) => i?.value === value)?.[0];
   return (
     <>
-      <Modal
-        title={
-          <span>
-            当前经纬度：{'\r' + item?.point?.lng + '\r' + item?.point?.lat}
-          </span>
-        }
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <div>
-          <div>当前类目：{tg?.label}</div>
-          <div>
-            序号：
-            <InputNumber value={vv} onChange={onChange} />
-          </div>
-        </div>
-      </Modal>
+      {/*<Modal*/}
+      {/*  title={*/}
+      {/*    <span>*/}
+      {/*      当前经纬度：{'\r' + item?.point?.lng + '\r' + item?.point?.lat}*/}
+      {/*    </span>*/}
+      {/*  }*/}
+      {/*  visible={isModalVisible}*/}
+      {/*  onOk={handleOk}*/}
+      {/*  onCancel={handleCancel}*/}
+      {/*>*/}
+      {/*  <div>*/}
+      {/*    <div>当前类目：{tg?.label}</div>*/}
+      {/*    <div>*/}
+      {/*      序号：*/}
+      {/*      <InputNumber value={vv} onChange={onChange} />*/}
+      {/*    </div>*/}
+      {/*  </div>*/}
+      {/*</Modal>*/}
       <Map
         ref={map}
         className={styles.map}
