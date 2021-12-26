@@ -147,7 +147,9 @@ const MapContainer: React.FC<MapContainerProps> = () => {
                   }}
                   key={item?.type + '-' + item?.serialNumber + '-' + index}
                 >
-                  <span style={{ whiteSpace: 'nowrap' }}>{s?.filed}：</span>
+                  <span style={{ whiteSpace: 'nowrap', fontWeight: 'bold' }}>
+                    {s?.filed}：
+                  </span>
                   <span>{s?.value}</span>
                 </div>
               );
