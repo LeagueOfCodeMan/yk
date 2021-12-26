@@ -99,6 +99,57 @@ const MapContainer: React.FC<MapContainerProps> = () => {
   const onChange = (v: number) => {
     setVV(v);
   };
+  const onTouchStart = (label: any, item: any) => {
+    const string = `${label ? '类目：' + label : ''}  ${
+      ' 编号：' + item?.serialNumber
+    }`;
+    Modal.info({
+      title: string,
+      okText: '知道了',
+      content: (
+        <div>
+          {item?.showList?.map(
+            (
+              s: {
+                filed: string;
+                value: string | number;
+              },
+              index: number,
+            ) => {
+              return (
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'flexStart',
+                    alignItems: 'center',
+                  }}
+                  key={item?.type + '-' + item?.serialNumber + '-' + index}
+                >
+                  <span style={{ whiteSpace: 'nowrap' }}>{s?.filed}：</span>
+                  <span>{s?.value}</span>
+                </div>
+              );
+            },
+          )}
+        </div>
+      ),
+    });
+  };
+  const isMobile = () => {
+    let info = navigator.userAgent;
+    let agents = [
+      'Android',
+      'iPhone',
+      'SymbianOS',
+      'Windows Phone',
+      'iPod',
+      'iPad',
+    ];
+    for (let i = 0; i < agents.length; i++) {
+      if (info.indexOf(agents[i]) >= 0) return true;
+    }
+    return false;
+  };
   const tg = options?.filter((i) => i?.value === value)?.[0];
   return (
     <>
@@ -142,43 +193,13 @@ const MapContainer: React.FC<MapContainerProps> = () => {
               position={{ lng: i?.lng, lat: i?.lat }}
             >
               <div className={styles.tip}>
-                <Popover
-                  visible={visibleStore[key]}
-                  onVisibleChange={(vis) => changeVisibleStore(vis, key)}
-                  placement="right"
-                  title={
-                    <Space>
-                      <span>{label ? '类目：' + label : ''}</span>
-                      <span>{label ? '编号：' + i?.serialNumber : ''}</span>
-                    </Space>
-                  }
-                  content={
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      {i?.showList?.map(
-                        (
-                          s: {
-                            filed: string;
-                            value: string | number;
-                          },
-                          index: number,
-                        ) => {
-                          return (
-                            <Space
-                              key={
-                                i?.type + '-' + i?.serialNumber + '-' + index
-                              }
-                            >
-                              <span>{s?.filed}：</span>
-                              <span>{s?.value}</span>
-                            </Space>
-                          );
-                        },
-                      )}
-                    </div>
-                  }
-                  trigger="click"
-                >
-                  <div style={{ position: 'relative' }}>
+                {isMobile() ? (
+                  <div
+                    style={{ position: 'relative' }}
+                    onTouchStart={() => {
+                      onTouchStart(label, i);
+                    }}
+                  >
                     <span
                       className={styles.num}
                       style={{
@@ -195,7 +216,62 @@ const MapContainer: React.FC<MapContainerProps> = () => {
                       type={`icon-dw-${i?.type || 1}`}
                     />
                   </div>
-                </Popover>
+                ) : (
+                  <Popover
+                    visible={visibleStore[key]}
+                    onVisibleChange={(vis) => changeVisibleStore(vis, key)}
+                    placement="right"
+                    title={
+                      <Space>
+                        <span>{label ? '类目：' + label : ''}</span>
+                        <span>{label ? '编号：' + i?.serialNumber : ''}</span>
+                      </Space>
+                    }
+                    content={
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        {i?.showList?.map(
+                          (
+                            s: {
+                              filed: string;
+                              value: string | number;
+                            },
+                            index: number,
+                          ) => {
+                            return (
+                              <Space
+                                key={
+                                  i?.type + '-' + i?.serialNumber + '-' + index
+                                }
+                              >
+                                <span>{s?.filed}：</span>
+                                <span>{s?.value}</span>
+                              </Space>
+                            );
+                          },
+                        )}
+                      </div>
+                    }
+                    trigger="click"
+                  >
+                    <div style={{ position: 'relative' }}>
+                      <span
+                        className={styles.num}
+                        style={{
+                          transform:
+                            i?.serialNumber < 99
+                              ? 'translate(-50%, -50%)'
+                              : 'scale(0.68) translate(-72%, -80%)',
+                        }}
+                      >
+                        {i?.serialNumber}
+                      </span>
+                      <IconFont
+                        style={{ fontSize: 32 }}
+                        type={`icon-dw-${i?.type || 1}`}
+                      />
+                    </div>
+                  </Popover>
+                )}
               </div>
             </CustomOverlay>
           );
