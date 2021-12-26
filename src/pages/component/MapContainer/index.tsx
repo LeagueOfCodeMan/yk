@@ -7,8 +7,7 @@ import {
   ScaleControl,
 } from '@uiw/react-baidu-map';
 import styles from './index.less';
-import { InputNumber, message, Modal, Radio, Space } from 'antd';
-import { Popover } from 'antd-mobile';
+import { Popover, InputNumber, message, Modal, Radio, Space } from 'antd';
 
 import {
   optionSelect as options,
@@ -30,26 +29,26 @@ interface MapContainerProps {}
  * type类型 BMAP_SATELLITE_MAP BMAP_NORMAL_MAP BMAP_HYBRID_MAP 暂不支持三维
  */
 
-export const os = () => {
-  var ua = navigator.userAgent,
-    isWindowsPhone = /(?:Windows Phone)/.test(ua),
-    isSymbian = /(?:SymbianOS)/.test(ua) || isWindowsPhone,
-    isAndroid = /(?:Android)/.test(ua),
-    isFireFox = /(?:Firefox)/.test(ua),
-    isChrome = /(?:Chrome|CriOS)/.test(ua),
-    isTablet =
-      /(?:iPad|PlayBook)/.test(ua) ||
-      (isAndroid && !/(?:Mobile)/.test(ua)) ||
-      (isFireFox && /(?:Tablet)/.test(ua)),
-    isPhone = /(?:iPhone)/.test(ua) && !isTablet,
-    isPc = !isPhone && !isAndroid && !isSymbian;
-  return {
-    isTablet: isTablet,
-    isPhone: isPhone,
-    isAndroid: isAndroid,
-    isPc: isPc,
-  };
-};
+// export const os = () => {
+//   var ua = navigator.userAgent,
+//     isWindowsPhone = /(?:Windows Phone)/.test(ua),
+//     isSymbian = /(?:SymbianOS)/.test(ua) || isWindowsPhone,
+//     isAndroid = /(?:Android)/.test(ua),
+//     isFireFox = /(?:Firefox)/.test(ua),
+//     isChrome = /(?:Chrome|CriOS)/.test(ua),
+//     isTablet =
+//       /(?:iPad|PlayBook)/.test(ua) ||
+//       (isAndroid && !/(?:Mobile)/.test(ua)) ||
+//       (isFireFox && /(?:Tablet)/.test(ua)),
+//     isPhone = /(?:iPhone)/.test(ua) && !isTablet,
+//     isPc = !isPhone && !isAndroid && !isSymbian;
+//   return {
+//     isTablet: isTablet,
+//     isPhone: isPhone,
+//     isAndroid: isAndroid,
+//     isPc: isPc,
+//   };
+// };
 
 const MapContainer: React.FC<MapContainerProps> = () => {
   const map = useRef<any>(null);
@@ -115,12 +114,63 @@ const MapContainer: React.FC<MapContainerProps> = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
-  const onRightClick = (i: any) => {
-    setItem(i);
-    setIsModalVisible(true);
-  };
+  // const onRightClick = (i: any) => {
+  //   setItem(i);
+  //   setIsModalVisible(true);
+  // };
   const onChange = (v: number) => {
     setVV(v);
+  };
+  const onTouchStart = (label: any, item: any) => {
+    const string = `${label ? '类目：' + label : ''}  ${
+      ' 编号：' + item?.serialNumber
+    }`;
+    Modal.info({
+      title: string,
+      okText: '知道了',
+      content: (
+        <div>
+          {item?.showList?.map(
+            (
+              s: {
+                filed: string;
+                value: string | number;
+              },
+              index: number,
+            ) => {
+              return (
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'flexStart',
+                    alignItems: 'center',
+                  }}
+                  key={item?.type + '-' + item?.serialNumber + '-' + index}
+                >
+                  <span style={{ whiteSpace: 'nowrap' }}>{s?.filed}：</span>
+                  <span>{s?.value}</span>
+                </div>
+              );
+            },
+          )}
+        </div>
+      ),
+    });
+  };
+  const isMobile = () => {
+    let info = navigator.userAgent;
+    let agents = [
+      'Android',
+      'iPhone',
+      'SymbianOS',
+      'Windows Phone',
+      'iPod',
+      'iPad',
+    ];
+    for (let i = 0; i < agents.length; i++) {
+      if (info.indexOf(agents[i]) >= 0) return true;
+    }
+    return false;
   };
   const tg = options?.filter((i) => i?.value === value)?.[0];
   return (
@@ -150,8 +200,7 @@ const MapContainer: React.FC<MapContainerProps> = () => {
         mapType={mapType}
         center={center || ZheJiangYongKangConfig.center}
         onClick={handleMapClick}
-        onTouchStart={handleMapClick}
-        onRightClick={onRightClick}
+        // onRightClick={onRightClick}
         zoom={15}
         minZoom={10}
       >
@@ -166,43 +215,12 @@ const MapContainer: React.FC<MapContainerProps> = () => {
               position={{ lng: i?.lng, lat: i?.lat }}
             >
               <div className={styles.tip}>
-                <Popover
-                  visible={visibleStore[key]}
-                  onVisibleChange={(vis) => changeVisibleStore(vis, key)}
-                  placement="right"
-                  trigger="click"
-                  content={
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <Space>
-                        <span>{label ? '类目：' + label : ''}</span>
-                        <span>{label ? '编号：' + i?.serialNumber : ''}</span>
-                      </Space>
-                      {i?.showList?.map(
-                        (
-                          s: {
-                            filed: string;
-                            value: string | number;
-                          },
-                          index: number,
-                        ) => {
-                          return (
-                            <Space
-                              key={
-                                i?.type + '-' + i?.serialNumber + '-' + index
-                              }
-                            >
-                              <span>{s?.filed}：</span>
-                              <span>{s?.value}</span>
-                            </Space>
-                          );
-                        },
-                      )}
-                    </div>
-                  }
-                >
+                {isMobile() ? (
                   <div
-                    id={i?.type + '-' + i?.serialNumber}
                     style={{ position: 'relative' }}
+                    onTouchStart={() => {
+                      onTouchStart(label, i);
+                    }}
                   >
                     <span
                       className={styles.num}
@@ -220,7 +238,62 @@ const MapContainer: React.FC<MapContainerProps> = () => {
                       type={`icon-dw-${i?.type || 1}`}
                     />
                   </div>
-                </Popover>
+                ) : (
+                  <Popover
+                    visible={visibleStore[key]}
+                    onVisibleChange={(vis) => changeVisibleStore(vis, key)}
+                    placement="right"
+                    title={
+                      <Space>
+                        <span>{label ? '类目：' + label : ''}</span>
+                        <span>{label ? '编号：' + i?.serialNumber : ''}</span>
+                      </Space>
+                    }
+                    content={
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        {i?.showList?.map(
+                          (
+                            s: {
+                              filed: string;
+                              value: string | number;
+                            },
+                            index: number,
+                          ) => {
+                            return (
+                              <Space
+                                key={
+                                  i?.type + '-' + i?.serialNumber + '-' + index
+                                }
+                              >
+                                <span>{s?.filed}：</span>
+                                <span>{s?.value}</span>
+                              </Space>
+                            );
+                          },
+                        )}
+                      </div>
+                    }
+                    trigger="click"
+                  >
+                    <div style={{ position: 'relative' }}>
+                      <span
+                        className={styles.num}
+                        style={{
+                          transform:
+                            i?.serialNumber < 99
+                              ? 'translate(-50%, -50%)'
+                              : 'scale(0.68) translate(-72%, -80%)',
+                        }}
+                      >
+                        {i?.serialNumber}
+                      </span>
+                      <IconFont
+                        style={{ fontSize: 32 }}
+                        type={`icon-dw-${i?.type || 1}`}
+                      />
+                    </div>
+                  </Popover>
+                )}
               </div>
             </CustomOverlay>
           );
