@@ -92,10 +92,10 @@ const MapContainer: React.FC<MapContainerProps> = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
-  const onRightClick = (i: any) => {
-    setItem(i);
-    setIsModalVisible(true);
-  };
+  // const onRightClick = (i: any) => {
+  //   setItem(i);
+  //   setIsModalVisible(true);
+  // };
   const onChange = (v: number) => {
     setVV(v);
   };
@@ -178,7 +178,7 @@ const MapContainer: React.FC<MapContainerProps> = () => {
         mapType={mapType}
         center={center || ZheJiangYongKangConfig.center}
         onClick={handleMapClick}
-        onRightClick={onRightClick}
+        // onRightClick={onRightClick}
         zoom={15}
         minZoom={10}
       >
