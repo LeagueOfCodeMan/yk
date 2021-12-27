@@ -6,7 +6,7 @@ import { AK } from '@/pages/mock/jl';
 const ContentCenter: React.FC<{}> = () => {
   return (
     <div style={{ width: '100%', height: '100%' }}>
-      <APILoader akay={AK}>
+      <APILoader akay={AK} protocol="https">
         <MapContainer />
       </APILoader>
     </div>
